@@ -43,7 +43,7 @@ class ErrorMapper {
         return _mapHttpStatus(error);
 
       case DioExceptionType.unknown:
-        return UnknownFailure("Error desconocido, $message", status);
+        return UnknownFailure(message, status);
     }
   }
 
