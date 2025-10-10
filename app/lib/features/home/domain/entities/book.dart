@@ -13,7 +13,7 @@ class Book {
   String? year;
   String? rating;
   String? desc;
-  Map<String, String>? pdf;
+  Map<String, dynamic>? pdf;
 
   Book({
     required this.title,
