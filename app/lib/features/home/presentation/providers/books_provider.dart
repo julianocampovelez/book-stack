@@ -24,6 +24,7 @@ class BooksNotifier extends StateNotifier<BooksState> {
 
   Future<void> loadNextPage() async {
     if (isLoading) return;
+
     isLoading = true;
     currentPage++;
 
@@ -31,10 +32,13 @@ class BooksNotifier extends StateNotifier<BooksState> {
       page: currentPage,
     );
 
+    print('Response from getBooks (page $currentPage): $response');
+
     response.when((failure) => state = state.copyWith(failure: failure), (
       data,
     ) {
       final List<Book> updatedBooks = [...state.books, ...data];
+      print('Updated Books Length: ${updatedBooks.length}');
       state = state.copyWith(books: updatedBooks, failure: null);
     });
 

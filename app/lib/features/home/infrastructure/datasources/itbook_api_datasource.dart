@@ -18,7 +18,10 @@ class ItbookApiDatasource extends BooksDatasource {
   @override
   Future<Either<Failure, List<Book>>> getBooks({int page = 1}) async {
     try {
+      print('Fetching books from Itbook API, page: $page');
+      print(_dio.options.baseUrl);
       final Response response = await _dio.get(getBooksPath(page));
+      print('Response Status Code: ${response.statusCode}');
 
       if (response.statusCode != HttpStatusCode.ok) {
         return Left(
@@ -39,9 +42,11 @@ class ItbookApiDatasource extends BooksDatasource {
 
       return Right(books);
     } on DioException catch (e) {
+      print(e);
       final Failure failure = ErrorMapper.mapDioError(e);
       return Left(failure);
     } catch (e) {
+      print(e);
       return Left(UnknownFailure(e.toString(), -1));
     }
   }
