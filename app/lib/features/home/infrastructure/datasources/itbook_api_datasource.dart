@@ -1,8 +1,9 @@
+import 'package:app/core/network/dio_network.dart';
 import 'package:dio/dio.dart';
 
 import 'package:app/core/entities/either_entity.dart';
 import 'package:app/core/network/errors/error_mapper.dart';
-import 'package:app/core/network/errors/failure.dart';
+import 'package:app/core/network/errors/failures.dart';
 import 'package:app/core/utils/constants/http_status_code.dart';
 import 'package:app/core/utils/constants/network_paths.dart';
 import 'package:app/features/home/domain/datasources/datasources.dart';
