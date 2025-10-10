@@ -4,4 +4,5 @@ import 'package:app/features/home/domain/entities/entities.dart';
 
 abstract class BooksRepository {
   Future<Either<Failure, List<Book>>> getBooks({int page = 1});
+  Future<Either<Failure, Book>> getBookByIsbn13(String isbn13);
 }
