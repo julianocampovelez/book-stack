@@ -1,8 +1,11 @@
+import 'package:app/features/home/presentation/screens/screens.dart';
+import 'package:app/features/home/presentation/state/sort_books_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:app/features/home/presentation/providers/books_provider.dart';
 import 'package:app/features/home/presentation/state/books_state.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const String routeName = '/homeScreen';
@@ -32,9 +35,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  void handleSort(PriceOrder order) async {
+    await _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    ref.read(programmingBooksProvider.notifier).sortByPrice(order);
+  }
+
   @override
   Widget build(BuildContext context) {
     final BooksState booksState = ref.watch(programmingBooksProvider);
+    final PriceOrder currentSortOrder = ref.watch(sortBooksProvider);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -63,20 +76,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         actions: [
           IconButton(
+            tooltip: 'Modo oscuro/claro',
+            onPressed: () {},
+            icon: const Icon(Icons.light_mode_outlined, color: Colors.white),
+          ),
+          IconButton(
             tooltip: 'Buscar',
             onPressed: () {},
             icon: const Icon(Icons.search, color: Colors.white),
           ),
+
           IconButton(
-            tooltip: 'Favoritos',
-            onPressed: () {},
-            icon: const Icon(Icons.favorite_border, color: Colors.white),
+            tooltip: 'Ordenar',
+            onPressed: () async {
+              final selected = await showMenu<PriceOrder>(
+                initialValue: currentSortOrder,
+                context: context,
+                position: const RelativeRect.fromLTRB(
+                  3000,
+                  80,
+                  16,
+                  0,
+                ), // posición del popup
+                items: const [
+                  PopupMenuItem(
+                    value: PriceOrder.ascending,
+                    child: Text('Precio: menor a mayor'),
+                  ),
+                  PopupMenuItem(
+                    value: PriceOrder.descending,
+                    child: Text('Precio: mayor a menor'),
+                  ),
+                ],
+              );
+
+              if (selected != null) {
+                handleSort(selected);
+              }
+            },
+            icon: const Icon(Icons.filter_list, color: Colors.white),
           ),
-          IconButton(
-            tooltip: 'Carrito',
-            onPressed: () {},
-            icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white),
-          ),
+
           const SizedBox(width: 8),
         ],
       ),
@@ -127,7 +167,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         imageUrl: item.image,
                         title: item.title,
                         price: item.price.toString(),
-                        onTap: () {},
+                        onTap: () => context.pushNamed(
+                          BookDetailsScreen.routeName,
+                          pathParameters: {'isbn13': item.isbn13},
+                        ),
                       );
                     },
                   ),
