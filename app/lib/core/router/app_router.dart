@@ -7,8 +7,19 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
+      name: HomeScreen.routeName,
       builder: (BuildContext context, GoRouterState state) =>
           const HomeScreen(),
+      routes: [
+        GoRoute(
+          path: 'book/:isbn13',
+          name: BookDetailsScreen.routeName,
+          builder: (context, state) {
+            final String isbn13 = state.pathParameters['isbn13'] ?? 'no-isbn13';
+            return BookDetailsScreen(isbn13: isbn13);
+          },
+        ),
+      ],
     ),
   ],
 );
