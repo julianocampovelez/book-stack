@@ -3,18 +3,56 @@ import 'package:dio/dio.dart';
 import 'package:app/core/network/errors/failures.dart';
 import 'package:app/core/utils/constants/http_status_code.dart';
 
-/// Provides a mapping between [DioException] HTTP responses
-/// and domain-specific [Failure] objects.
+/// Provides a mapping between [DioException] instances and
+/// domain-specific [Failure] objects.
 ///
-/// This class centralizes error interpretation, ensuring
-/// consistent handling and user-friendly messages across the app.
+/// This class centralizes error interpretation to ensure consistent
+/// error handling and user-friendly messages throughout the app.
 class ErrorMapper {
-  /// Maps a [DioException] to a specific [Failure] subclass.
+  /// Maps a [DioException] to a corresponding [Failure] type.
   ///
-  /// The mapping is based on the HTTP status code returned by the server.
-  /// If no status code is available (e.g., due to no network connection),
-  /// a [NetworkFailure] is returned by default.
+  /// This method first evaluates the [DioExceptionType] to identify
+  /// low-level connection or timeout issues. If the error is related
+  /// to an HTTP response, it delegates to [_mapHttpStatus] for
+  /// status code–specific handling.
   static Failure mapDioError(DioException error) {
+    final int status = error.response?.statusCode ?? -1;
+    final String message = error.message ?? "Error desconocido";
+
+    // Handle Dio-specific error types before checking HTTP status codes.
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+        return NetworkFailure("Tiempo de conexión agotado", status);
+
+      case DioExceptionType.sendTimeout:
+        return NetworkFailure("Tiempo de envío agotado", status);
+
+      case DioExceptionType.receiveTimeout:
+        return NetworkFailure("Tiempo de respuesta agotado", status);
+
+      case DioExceptionType.badCertificate:
+        return NetworkFailure("Certificado SSL no válido", status);
+
+      case DioExceptionType.cancel:
+        return NetworkFailure("Petición cancelada por el usuario", status);
+
+      case DioExceptionType.connectionError:
+        return NetworkFailure("No hay conexión con el servidor", status);
+
+      case DioExceptionType.badResponse:
+        return _mapHttpStatus(error);
+
+      case DioExceptionType.unknown:
+        return UnknownFailure("Error desconocido, $message", status);
+    }
+  }
+
+  /// Maps an HTTP response error to a specific [Failure] subclass.
+  ///
+  /// This method handles known [HttpStatusCode] values and returns
+  /// a more descriptive error message for each. Unknown status codes
+  /// default to [UnknownFailure].
+  static Failure _mapHttpStatus(DioException error) {
     final int status = error.response?.statusCode ?? -1;
     final String message = error.message ?? "Error desconocido";
 
