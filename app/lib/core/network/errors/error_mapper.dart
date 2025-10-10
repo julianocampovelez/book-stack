@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import 'package:app/core/network/errors/failure.dart';
+import 'package:app/core/network/errors/failures.dart';
 import 'package:app/core/utils/constants/http_status_code.dart';
 
 /// Provides a mapping between [DioException] HTTP responses
