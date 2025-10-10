@@ -1,47 +1,68 @@
 import 'package:dio/dio.dart';
 
 import 'package:app/core/network/errors/failure.dart';
+import 'package:app/core/utils/constants/http_status_code.dart';
 
-/// Provides utilities to convert [DioException] instances into
-/// domain-specific [Failure] objects.
+/// Provides a mapping between [DioException] HTTP responses
+/// and domain-specific [Failure] objects.
 ///
-/// This helps standardize error handling across the app.
+/// This class centralizes error interpretation, ensuring
+/// consistent handling and user-friendly messages across the app.
 class ErrorMapper {
-  /// Maps a [DioException] to a corresponding [Failure] type.
+  /// Maps a [DioException] to a specific [Failure] subclass.
   ///
-  /// Returns different [Failure] subclasses depending on the
-  /// nature of the network or server error.
+  /// The mapping is based on the HTTP status code returned by the server.
+  /// If no status code is available (e.g., due to no network connection),
+  /// a [NetworkFailure] is returned by default.
   static Failure mapDioError(DioException error) {
-    switch (error.type) {
-      case DioExceptionType.connectionTimeout:
-        return NetworkFailure("Tiempo de conexión agotado");
+    final int status = error.response?.statusCode ?? -1;
+    final String message = error.message ?? "Error desconocido";
 
-      case DioExceptionType.sendTimeout:
-        return NetworkFailure("Tiempo de envío agotado");
+    switch (status) {
+      case HttpStatusCode.movedPermanently:
+        return NetworkFailure("Recurso movido permanentemente", status);
 
-      case DioExceptionType.receiveTimeout:
-        return NetworkFailure("Tiempo de respuesta agotado");
+      case HttpStatusCode.found:
+        return NetworkFailure("Recurso encontrado en otra ubicación", status);
 
-      case DioExceptionType.badResponse:
-        final int status = error.response?.statusCode ?? 0;
-        final String message =
-            error.response?.data['message'] ?? "Error desconocido";
+      case HttpStatusCode.badRequest:
+        return NetworkFailure("Petición incorrecta", status);
 
-        if (status >= 500) {
-          return ServerFailure("Error del servidor: $message");
-        } else if (status == 401) {
-          return UnauthorizedFailure("No autorizado: $message");
-        } else if (status == 404) {
-          return NetworkFailure("Recurso no encontrado");
-        } else {
-          return NetworkFailure("Error de red ($status): $message");
-        }
+      case HttpStatusCode.unauthorized:
+        return UnauthorizedFailure("No autorizado", status);
 
-      case DioExceptionType.cancel:
-        return NetworkFailure("Petición cancelada");
+      case HttpStatusCode.forbidden:
+        return UnauthorizedFailure("Acceso prohibido", status);
+
+      case HttpStatusCode.notFound:
+        return NotFoundFailure("Recurso no encontrado", status);
+
+      case HttpStatusCode.methodNotAllowed:
+        return NetworkFailure("Método HTTP no permitido", status);
+
+      case HttpStatusCode.tooManyRequests:
+        return NetworkFailure(
+          "Demasiadas peticiones, intenta más tarde",
+          status,
+        );
+
+      case HttpStatusCode.internalServerError:
+        return ServerFailure("Error interno del servidor", status);
+
+      case HttpStatusCode.badGateway:
+        return ServerFailure("Puerta de enlace incorrecta", status);
+
+      case HttpStatusCode.serviceUnavailable:
+        return ServerFailure("Servicio no disponible", status);
+
+      case HttpStatusCode.gatewayTimeout:
+        return ServerFailure("Tiempo de espera agotado en el servidor", status);
+
+      case -1:
+        return NetworkFailure("No hay conexión con el servidor", status);
 
       default:
-        return UnknownFailure("Error desconocido: ${error.message}");
+        return UnknownFailure("Error desconocido: $message", status);
     }
   }
 }

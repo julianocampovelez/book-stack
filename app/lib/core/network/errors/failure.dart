@@ -8,7 +8,7 @@ abstract class Failure {
 
 /// Represents a network-related failure, such as loss of connection or timeout.
 class NetworkFailure extends Failure {
-  const NetworkFailure(super.message, {this.statusCode});
+  const NetworkFailure(super.message, this.statusCode);
 
   /// Optional HTTP status code associated with the failure.
   final int? statusCode;
@@ -16,7 +16,7 @@ class NetworkFailure extends Failure {
 
 /// Represents a server-side failure.
 class ServerFailure extends Failure {
-  const ServerFailure(super.message, {this.statusCode});
+  const ServerFailure(super.message, this.statusCode);
 
   /// Optional HTTP status code associated with the failure.
   final int? statusCode;
@@ -24,7 +24,7 @@ class ServerFailure extends Failure {
 
 /// Represents a failure caused by unauthorized access..
 class UnauthorizedFailure extends Failure {
-  const UnauthorizedFailure(super.message, {this.statusCode});
+  const UnauthorizedFailure(super.message, this.statusCode);
 
   /// Optional HTTP status code associated with the failure.
   final int? statusCode;
@@ -32,7 +32,14 @@ class UnauthorizedFailure extends Failure {
 
 /// Represents an unknown or unexpected error.
 class UnknownFailure extends Failure {
-  const UnknownFailure(super.message, {this.statusCode});
+  const UnknownFailure(super.message, this.statusCode);
+
+  /// Optional HTTP status code associated with the failure.
+  final int? statusCode;
+}
+
+class NotFoundFailure extends Failure {
+  const NotFoundFailure(super.message, this.statusCode);
 
   /// Optional HTTP status code associated with the failure.
   final int? statusCode;
