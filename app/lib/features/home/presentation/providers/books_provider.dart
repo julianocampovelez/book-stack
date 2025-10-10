@@ -1,3 +1,4 @@
+import 'package:app/features/home/presentation/state/sort_books_provider.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:app/core/entities/either_entity.dart';
@@ -46,5 +47,17 @@ class BooksNotifier extends StateNotifier<BooksState> {
     // Small delay before marking loading as complete, wait for full rendering.
     await Future.delayed(const Duration(milliseconds: 200));
     isLoading = false;
+  }
+
+  void sortByPrice(PriceOrder order) {
+    if (order == PriceOrder.none || state.books.isEmpty) return;
+
+    List<Book> sortedBooks = [...state.books];
+    if (order == PriceOrder.ascending) {
+      sortedBooks.sort((a, b) => a.price.compareTo(b.price));
+    } else {
+      sortedBooks.sort((a, b) => b.price.compareTo(a.price));
+    }
+    state = state.copyWith(books: sortedBooks);
   }
 }
