@@ -22,7 +22,9 @@ class BooksNotifier extends StateNotifier<BooksState> {
   bool isLoading = false;
   BooksCallback getBooks;
 
+  /// Loads the next page of books from the remote repository.
   Future<void> loadNextPage() async {
+    // Prevent concurrent fetches while a page is already being loaded.
     if (isLoading) return;
 
     isLoading = true;
@@ -32,17 +34,17 @@ class BooksNotifier extends StateNotifier<BooksState> {
       page: currentPage,
     );
 
-    print('Response from getBooks (page $currentPage): $response');
-
+    // Handle either failure or successful data response.
     response.when((failure) => state = state.copyWith(failure: failure), (
       data,
     ) {
+      // Merge existing books with the newly fetched ones.
       final List<Book> updatedBooks = [...state.books, ...data];
-      print('Updated Books Length: ${updatedBooks.length}');
       state = state.copyWith(books: updatedBooks, failure: null);
     });
 
-    await Future.delayed(const Duration(milliseconds: 300));
+    // Small delay before marking loading as complete, wait for full rendering.
+    await Future.delayed(const Duration(milliseconds: 200));
     isLoading = false;
   }
 }

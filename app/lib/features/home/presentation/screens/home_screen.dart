@@ -1,8 +1,8 @@
-import 'package:app/features/home/domain/entities/book.dart';
-import 'package:app/features/home/presentation/providers/books_provider.dart';
-import 'package:app/features/home/presentation/state/books_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:app/features/home/presentation/providers/books_provider.dart';
+import 'package:app/features/home/presentation/state/books_state.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const String routeName = '/homeScreen';
@@ -13,10 +13,23 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    ref.read(programmingBooksProvider.notifier).loadNextPage();
+
+    _scrollController.addListener(_onScrollEnd);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(programmingBooksProvider.notifier).loadNextPage();
+    });
+  }
+
+  void _onScrollEnd() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
+      ref.read(programmingBooksProvider.notifier).loadNextPage();
+    }
   }
 
   @override
@@ -98,6 +111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 const SizedBox(height: 8),
                 Expanded(
                   child: GridView.builder(
+                    controller: _scrollController,
                     physics: const BouncingScrollPhysics(),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
