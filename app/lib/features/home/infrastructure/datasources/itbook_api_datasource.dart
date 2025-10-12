@@ -11,15 +11,20 @@ import 'package:app/features/home/infrastructure/mappers/book_mapper.dart';
 import 'package:app/features/home/infrastructure/models/models.dart';
 
 class ItbookApiDatasource extends BooksDatasource {
-  final Dio _dio;
   ItbookApiDatasource(this._dio);
 
+  /// The HTTP client used to communicate with the Itbook API.
+  final Dio _dio;
+
+  // Internal helper function to fetch and map book lists from a given [path].
+  ///
+  /// Performs a `GET` request, validates the HTTP response, and maps the
+  /// JSON data into a list of [Book] domain entities.
   Future<Either<Failure, List<Book>>> _fetchBooksFromPath(String path) async {
     try {
       final Response response = await _dio.get(path);
 
       if (response.statusCode != HttpStatusCode.ok) {
-        print('hola');
         return Left(
           ServerFailure(
             "Error del servidor: ${response.statusMessage}",
@@ -31,8 +36,6 @@ class ItbookApiDatasource extends BooksDatasource {
       final ItbookResponse responseData = ItbookResponse.fromJson(
         response.data,
       );
-
-      print(responseData);
 
       final List<Book> books = responseData.books
           .map(BookMapper.itbookToEntity)
@@ -47,12 +50,16 @@ class ItbookApiDatasource extends BooksDatasource {
     }
   }
 
+  /// Retrieves a paginated list of books from the Itbook API.
+  ///
+  /// [page] defines the page number to fetch (defaults to `1`).
   @override
   Future<Either<Failure, List<Book>>> getBooks({int page = 1}) async {
     final String path = NetworkPaths.getBooksPath(page);
     return _fetchBooksFromPath(path);
   }
 
+  /// Retrieves detailed information about a specific book by its [isbn13].
   @override
   Future<Either<Failure, Book>> getBookByIsbn13(String isbn13) async {
     try {
@@ -84,6 +91,9 @@ class ItbookApiDatasource extends BooksDatasource {
     }
   }
 
+  /// Searches for books in the Itbook API matching the given [query].
+  ///
+  /// Optionally supports pagination through the [page] parameter.
   @override
   Future<Either<Failure, List<Book>>> searchBooks({
     String query = '',
