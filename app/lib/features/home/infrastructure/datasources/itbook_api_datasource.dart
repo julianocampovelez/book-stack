@@ -14,12 +14,12 @@ class ItbookApiDatasource extends BooksDatasource {
   final Dio _dio;
   ItbookApiDatasource(this._dio);
 
-  @override
-  Future<Either<Failure, List<Book>>> getBooks({int page = 1}) async {
+  Future<Either<Failure, List<Book>>> _fetchBooksFromPath(String path) async {
     try {
-      final Response response = await _dio.get(NetworkPaths.getBooksPath(page));
+      final Response response = await _dio.get(path);
 
       if (response.statusCode != HttpStatusCode.ok) {
+        print('hola');
         return Left(
           ServerFailure(
             "Error del servidor: ${response.statusMessage}",
@@ -32,8 +32,10 @@ class ItbookApiDatasource extends BooksDatasource {
         response.data,
       );
 
+      print(responseData);
+
       final List<Book> books = responseData.books
-          .map((bookItbook) => BookMapper.itbookToEntity(bookItbook))
+          .map(BookMapper.itbookToEntity)
           .toList();
 
       return Right(books);
@@ -46,15 +48,17 @@ class ItbookApiDatasource extends BooksDatasource {
   }
 
   @override
+  Future<Either<Failure, List<Book>>> getBooks({int page = 1}) async {
+    final String path = NetworkPaths.getBooksPath(page);
+    return _fetchBooksFromPath(path);
+  }
+
+  @override
   Future<Either<Failure, Book>> getBookByIsbn13(String isbn13) async {
     try {
       final Response response = await _dio.get(
         NetworkPaths.getBookByIsbn13Path(isbn13),
       );
-
-      print('Response data: ${response.data}');
-
-      print('Response status code: ${response.data.runtimeType}');
 
       if (response.statusCode != HttpStatusCode.ok) {
         return Left(
@@ -68,7 +72,6 @@ class ItbookApiDatasource extends BooksDatasource {
       final ItbookDetailsResponse responseData = ItbookDetailsResponse.fromJson(
         response.data,
       );
-      print('Mapped response data: $responseData');
 
       final Book book = BookMapper.itbookDetailsToEntity(responseData);
 
@@ -79,5 +82,14 @@ class ItbookApiDatasource extends BooksDatasource {
     } catch (e) {
       return Left(UnknownFailure(e.toString(), -1));
     }
+  }
+
+  @override
+  Future<Either<Failure, List<Book>>> searchBooks({
+    String query = '',
+    int page = 1,
+  }) async {
+    final String path = NetworkPaths.searchBooksPath(query, page);
+    return _fetchBooksFromPath(path);
   }
 }

@@ -18,4 +18,12 @@ class BooksRepositoryImpl extends BooksRepository {
   Future<Either<Failure, Book>> getBookByIsbn13(String isbn13) {
     return datasource.getBookByIsbn13(isbn13);
   }
+
+  @override
+  Future<Either<Failure, List<Book>>> searchBooks({
+    String query = '',
+    int page = 1,
+  }) {
+    return datasource.searchBooks(query: query, page: page);
+  }
 }

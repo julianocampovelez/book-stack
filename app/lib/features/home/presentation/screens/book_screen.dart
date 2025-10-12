@@ -1,5 +1,6 @@
 import 'package:app/features/home/domain/entities/entities.dart';
-import 'package:app/features/home/presentation/providers/book_details_provider.dart';
+import 'package:app/features/home/presentation/providers/providers.dart';
+
 import 'package:app/features/home/presentation/state/book_details_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

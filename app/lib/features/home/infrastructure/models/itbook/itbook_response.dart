@@ -26,11 +26,13 @@ class ItbookResponse {
   /// Creates an [ItbookResponse] instance from a JSON map.
   factory ItbookResponse.fromJson(Map<String, dynamic> json) => ItbookResponse(
     error: json['error'],
-    total: json['total'],
-    page: json['page'],
-    books: List<BookItbook>.from(
-      json['books'].map((x) => BookItbook.fromJson(x)),
-    ),
+    total: json['total'] ?? '0',
+    page: json['page'] ?? '0',
+    books: json['books'] == null
+        ? []
+        : List<BookItbook>.from(
+            json['books'].map((x) => BookItbook.fromJson(x)),
+          ),
   );
 
   /// Converts this [ItbookResponse] to a JSON map.

@@ -1,9 +1,12 @@
+import 'package:app/features/home/domain/entities/entities.dart';
+import 'package:app/features/home/presentation/delegates/search_book_delegate.dart';
+import 'package:app/features/home/presentation/providers/providers.dart';
 import 'package:app/features/home/presentation/screens/screens.dart';
-import 'package:app/features/home/presentation/state/sort_books_provider.dart';
+import 'package:app/features/home/presentation/state/sort_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:app/features/home/presentation/providers/books_provider.dart';
+import 'package:app/features/home/presentation/providers/books/books_provider.dart';
 import 'package:app/features/home/presentation/state/books_state.dart';
 import 'package:go_router/go_router.dart';
 
@@ -53,37 +56,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF6366F1), // Indigo-500
-                Color(0xFF8B5CF6), // Violet-500
-              ],
-            ),
-          ),
-        ),
         centerTitle: false,
         title: const Text(
           'Book Stack',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
         actions: [
           IconButton(
             tooltip: 'Modo oscuro/claro',
             onPressed: () {},
-            icon: const Icon(Icons.light_mode_outlined, color: Colors.white),
+            icon: const Icon(Icons.light_mode_outlined),
           ),
           IconButton(
             tooltip: 'Buscar',
-            onPressed: () {},
-            icon: const Icon(Icons.search, color: Colors.white),
+            onPressed: () async {
+              final Book? book = await showSearch<Book?>(
+                context: context,
+                delegate: SearchBookDelegate(
+                  searchBooks: ref.read(booksRepositoryProvider).searchBooks,
+                ),
+              );
+            },
+            icon: const Icon(Icons.search),
           ),
 
           IconButton(
@@ -114,7 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 handleSort(selected);
               }
             },
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: const Icon(Icons.filter_list),
           ),
 
           const SizedBox(width: 8),
@@ -140,15 +134,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Explora nuestra selección',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
                 Expanded(
                   child: GridView.builder(
                     controller: _scrollController,
@@ -158,7 +143,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           crossAxisCount: 2,
                           mainAxisSpacing: 12,
                           crossAxisSpacing: 12,
-                          childAspectRatio: 0.68,
+                          childAspectRatio: 0.5,
                         ),
                     itemCount: booksState.books.length,
                     itemBuilder: (context, index) {
@@ -201,66 +186,60 @@ class _BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Card(
-        color: Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AspectRatio(
-              aspectRatio: 4 / 3,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) => Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
                   color: Colors.grey[200],
-                  child: const Icon(Icons.broken_image, color: Colors.grey),
+                  child: const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.grey[200],
+                child: const Icon(Icons.broken_image, color: Colors.grey),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
+                const SizedBox(height: 8),
+                Text(
+                  price,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.green[700],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    price,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.green[700],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

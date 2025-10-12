@@ -1,4 +1,4 @@
-import 'package:app/features/home/presentation/state/sort_books_provider.dart';
+import 'package:app/features/home/presentation/state/sort_provider.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:app/core/entities/either_entity.dart';
