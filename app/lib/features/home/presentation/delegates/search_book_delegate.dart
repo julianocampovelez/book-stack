@@ -25,7 +25,8 @@ class SearchBookDelegate extends SearchDelegate<Book?> {
       final Either<Failure, List<Book>> result = await searchBooks(
         query: formattedQuery,
       );
-      print(result);
+
+      if (debouncedStream.isClosed) return;
       debouncedStream.add(result);
     });
   }
@@ -70,6 +71,7 @@ class SearchBookDelegate extends SearchDelegate<Book?> {
 
   void _clearStreams() {
     debouncedStream.close();
+    _debouncedTimer?.cancel();
   }
 
   @override

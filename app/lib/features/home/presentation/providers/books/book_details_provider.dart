@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:app/core/entities/either_entity.dart';
@@ -21,7 +23,10 @@ class BookDetailsNotifier extends StateNotifier<BookDetailsMapState> {
 
   final GetBookDetailsCallback getBookDetails;
 
-  Future<void> loadBook({required String isbn13}) async {
+  Future<void> loadBook({
+    required WidgetRef ref,
+    required String isbn13,
+  }) async {
     state = state.copyWith(failure: null);
 
     if (state.books.containsKey(isbn13)) return;
@@ -43,5 +48,21 @@ class BookDetailsNotifier extends StateNotifier<BookDetailsMapState> {
     );
 
     state = state.copyWith(isLoading: false);
+  }
+
+  void updateScore(String isbn13, int score) {
+    final Book? book = state.books[isbn13];
+
+    if (book == null) return;
+
+    // // 1. ACTUALIZAR Y GUARDAR EN EL NOTIFIER DE PUNTUACIONES (Persistencia)
+    // // El Notifier de puntuaciones se encarga de llamar a SQLite/Drift.
+    // _ref.read(scoresManagerProvider.notifier).updateAndSaveScore(isbn13, score);
+
+    // // 2. ACTUALIZAR EL ESTADO DE ESTE NOTIFIER (UI)
+    // final Book updatedBook = book.copyWith(score: score);
+
+    // // Crea un nuevo mapa con el libro actualizado
+    // state = state.copyWith(books: {...state.books, isbn13: updatedBook});
   }
 }

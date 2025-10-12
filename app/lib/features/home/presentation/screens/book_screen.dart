@@ -20,13 +20,19 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(bookDetailsProvider.notifier).loadBook(isbn13: widget.isbn13);
+      ref
+          .read(bookDetailsProvider.notifier)
+          .loadBook(ref: ref, isbn13: widget.isbn13);
+      ref
+          .read(scoreBooksProvider.notifier)
+          .loadScoreBook(isbn13: widget.isbn13);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final BookDetailsMapState bookState = ref.watch(bookDetailsProvider);
+    final int? score = ref.watch(scoreBooksProvider)[widget.isbn13];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Book Details')),
@@ -64,6 +70,37 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text('Puntuación: '),
+
+                      ...List.generate(5, (index) {
+                        if (score == null) return const SizedBox.shrink();
+
+                        final int ratingValue = (index + 1);
+                        final bool isFilled = ratingValue <= score;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(scoreBooksProvider.notifier)
+                                  .setScoreBook(
+                                    isbn13: widget.isbn13,
+                                    score: ratingValue,
+                                  );
+                            },
+                            child: Icon(
+                              isFilled ? Icons.star : Icons.star_border,
+                              color: Colors.amber,
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+
                   Text(
                     'Authors: ${book.authors}',
                     style: const TextStyle(fontSize: 16),
