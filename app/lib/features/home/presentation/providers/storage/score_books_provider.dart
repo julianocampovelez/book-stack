@@ -5,7 +5,7 @@ import 'package:app/features/home/presentation/providers/providers.dart';
 
 final scoreBooksProvider =
     StateNotifierProvider<ScoreBooksNotifier, ScoreBooks>((ref) {
-      final localStorageRepository = ref.watch(localSorageRepositoryProvider);
+      final localStorageRepository = ref.watch(localStorageRepositoryProvider);
       return ScoreBooksNotifier(localStorageRepository: localStorageRepository);
     });
 
@@ -18,7 +18,7 @@ class ScoreBooksNotifier extends StateNotifier<ScoreBooks> {
 
   Future<void> loadScoreBook({required String isbn13}) async {
     if (state.containsKey(isbn13)) return;
-    print('ScoreBooksNotifier.loadScoreBook: $isbn13');
+
     final score = await localStorageRepository.getScoreBook(isbn13);
     state = {...state, isbn13: score};
   }
@@ -28,6 +28,7 @@ class ScoreBooksNotifier extends StateNotifier<ScoreBooks> {
     required int score,
   }) async {
     if (state[isbn13] == score) return;
+
     await localStorageRepository.setScoreBook(isbn13: isbn13, score: score);
     state = {...state, isbn13: score};
   }

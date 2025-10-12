@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:app/core/entities/either_entity.dart';
 import 'package:app/core/network/errors/failures.dart';
-
 import 'package:app/features/home/domain/entities/entities.dart';
 
 typedef SearchBooksCallback =
