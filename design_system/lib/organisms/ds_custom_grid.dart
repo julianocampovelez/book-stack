@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// A customizable grid widget that displays a list of items using a provided item builder.
 class DsCustomGrid<T> extends StatelessWidget {
   const DsCustomGrid({
     super.key,
+
+    /// The scroll controller for the grid view.
     required this.scrollController,
+
+    /// The list of items to display in the grid.
     required this.items,
+
+    /// The builder function for creating each grid item.
     required this.itemBuilder,
   });
 
@@ -14,7 +21,7 @@ class DsCustomGrid<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
+    Widget dsCustomGrid = GridView.builder(
       controller: scrollController,
       physics: const BouncingScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -29,5 +36,7 @@ class DsCustomGrid<T> extends StatelessWidget {
         return itemBuilder(context, item);
       },
     );
+
+    return dsCustomGrid;
   }
 }

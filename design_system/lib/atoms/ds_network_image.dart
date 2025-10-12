@@ -1,27 +1,34 @@
 import 'package:flutter/material.dart';
 
+import 'package:design_system/design_system.dart';
+
 /// A widget that displays an image from a network URL.
 class DsNetworkImage extends StatelessWidget {
   /// The URL of the network image.
   final String url;
 
-  /// The desired width of the image.
-  final double width;
-
-  /// The desired height of the image.
-  final double height;
-
   /// Creates a widget that displays an image from a network URL.
-  const DsNetworkImage({
-    super.key,
-    required this.url,
-    required this.width,
-    required this.height,
-  });
+  const DsNetworkImage({super.key, required this.url});
 
   @override
   Widget build(BuildContext context) {
-    Widget dsNetworkImage = Image.network(url, width: width, height: height);
+    Widget dsNetworkImage = Image.network(
+      url,
+      fit: BoxFit.cover,
+      loadingBuilder: (_, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return const Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: DsCircularProgress(strokeWidth: 2.0),
+          ),
+        );
+      },
+      errorBuilder: (_, __, ___) =>
+          const Icon(Icons.broken_image, color: Colors.grey),
+    );
+
     return dsNetworkImage;
   }
 }

@@ -1,3 +1,6 @@
+import 'package:design_system/foundations/colors.dart';
+import 'package:design_system/tokens/colors.dart';
+import 'package:design_system/tokens/typography.dart';
 import 'package:flutter/material.dart';
 
 class DsTextTheme {
@@ -5,49 +8,49 @@ class DsTextTheme {
 
   static TextTheme lightTextTheme = TextTheme(
     bodyLarge: TextStyle().copyWith(
-      fontSize: 16,
+      fontSize: DsTypography.h3,
       fontWeight: FontWeight.w400,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     bodyMedium: TextStyle().copyWith(
-      fontSize: 14,
+      fontSize: DsTypography.h4,
       fontWeight: FontWeight.w400,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     bodySmall: TextStyle().copyWith(
-      fontSize: 12,
+      fontSize: DsTypography.h5,
       fontWeight: FontWeight.w400,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     titleLarge: TextStyle().copyWith(
-      fontSize: 22,
+      fontSize: DsTypography.h1,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     titleMedium: TextStyle().copyWith(
-      fontSize: 18,
+      fontSize: DsTypography.h2,
       fontWeight: FontWeight.w500,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     titleSmall: TextStyle().copyWith(
-      fontSize: 16,
+      fontSize: DsTypography.h3,
       fontWeight: FontWeight.w500,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     labelLarge: TextStyle().copyWith(
-      fontSize: 14,
+      fontSize: DsTypography.h4,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     labelMedium: TextStyle().copyWith(
-      fontSize: 12,
+      fontSize: DsTypography.h5,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
     labelSmall: TextStyle().copyWith(
-      fontSize: 10,
+      fontSize: DsTypography.h6,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: DsColorsFoundations.lightTextColor,
     ),
   );
 
@@ -55,47 +58,47 @@ class DsTextTheme {
     bodyLarge: TextStyle().copyWith(
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     bodyMedium: TextStyle().copyWith(
       fontSize: 14,
       fontWeight: FontWeight.w400,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     bodySmall: TextStyle().copyWith(
       fontSize: 12,
       fontWeight: FontWeight.w400,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     titleLarge: TextStyle().copyWith(
       fontSize: 22,
       fontWeight: FontWeight.w600,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     titleMedium: TextStyle().copyWith(
       fontSize: 18,
       fontWeight: FontWeight.w500,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     titleSmall: TextStyle().copyWith(
       fontSize: 16,
       fontWeight: FontWeight.w500,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     labelLarge: TextStyle().copyWith(
       fontSize: 14,
       fontWeight: FontWeight.w600,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     labelMedium: TextStyle().copyWith(
       fontSize: 12,
       fontWeight: FontWeight.w600,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
     labelSmall: TextStyle().copyWith(
       fontSize: 10,
       fontWeight: FontWeight.w600,
-      color: Colors.white,
+      color: DsColorsFoundations.darkTextColor,
     ),
   );
 }

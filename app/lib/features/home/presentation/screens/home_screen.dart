@@ -1,4 +1,3 @@
-import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +9,7 @@ import 'package:app/features/home/presentation/providers/providers.dart';
 import 'package:app/features/home/presentation/screens/screens.dart';
 import 'package:app/features/home/presentation/state/books_state.dart';
 import 'package:app/features/home/presentation/state/sort_provider.dart';
+import 'package:design_system/design_system.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const String routeName = '/homeScreen';
@@ -20,14 +20,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
 
     // Add a listener to the scroll controller to detect when the user scrolls to the end
-    _scrollController.addListener(_onScrollEnd);
+    scrollController.addListener(_onScrollEnd);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Load the first page of books when the widget is built
@@ -35,15 +35,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  // Function to load more books when the user scrolls to the end
   void _onScrollEnd() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 100) {
+    if (scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent - 100) {
       ref.read(programmingBooksProvider.notifier).loadNextPage();
     }
   }
 
+  // Function to handle sorting, scroll to top and update state
   void _handleSort(PriceOrder order) async {
-    await _scrollController.animateTo(
+    await scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -52,6 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(programmingBooksProvider.notifier).sortByPrice(order);
   }
 
+  // Function to determine the icon of icon button theme based on the current theme
   IconData _iconTheme() {
     return Theme.of(context).brightness == Brightness.dark
         ? Icons.dark_mode_outlined
@@ -126,47 +129,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: Builder(
-        builder: (_) {
-          if (booksState.failure != null) {
-            return Center(
-              child: Text(
-                'Error: ${booksState.failure!.message}',
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          }
 
-          if (booksState.books.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: _HomeView(
+        booksState: booksState,
+        scrollController: scrollController,
+      ),
+    );
+  }
+}
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: DsCustomGrid(
-                    scrollController: _scrollController,
-                    items: booksState.books,
-                    itemBuilder: (context, book) {
-                      return DsItemCard(
-                        imageUrl: book.image,
-                        title: book.title,
-                        price: book.price.toString(),
-                        onTap: () => context.pushNamed(
-                          BookDetailsScreen.routeName,
-                          pathParameters: {'isbn13': book.isbn13},
-                        ),
-                      );
-                    },
+class _HomeView extends StatelessWidget {
+  const _HomeView({required this.booksState, required this.scrollController});
+
+  final BooksState booksState;
+  final ScrollController scrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    if (booksState.failure != null) {
+      return Center(
+        child: Text(
+          'Error: ${booksState.failure!.message}',
+          style: const TextStyle(color: Colors.red),
+        ),
+      );
+    }
+
+    if (booksState.books.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: DsCustomGrid(
+              scrollController: scrollController,
+              items: booksState.books,
+              itemBuilder: (_, book) {
+                return DsItemCard(
+                  imageUrl: book.image,
+                  title: book.title,
+                  price: book.price.toString(),
+                  onTap: () => context.pushNamed(
+                    BookDetailsScreen.routeName,
+                    pathParameters: {'isbn13': book.isbn13},
                   ),
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

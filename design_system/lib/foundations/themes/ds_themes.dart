@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:design_system/foundations/themes/custom_themes/ds_text_selection_theme.dart';
 import 'package:design_system/foundations/themes/custom_themes/ds_text_theme.dart';
 
 final ThemeData lightThemeDs = ThemeData(
@@ -12,11 +13,7 @@ final ThemeData lightThemeDs = ThemeData(
     backgroundColor: Color(0xfff95b1c),
     foregroundColor: Colors.white70,
   ),
-  textSelectionTheme: const TextSelectionThemeData(
-    cursorColor: Color(0xfff95b1c),
-    selectionColor: Color.fromARGB(24, 249, 90, 28),
-    selectionHandleColor: Color(0xfff95b1c),
-  ),
+  textSelectionTheme: DsTextSelectionTheme.textSelectionThemeDefault,
   textTheme: DsTextTheme.lightTextTheme,
 );
 
@@ -30,10 +27,6 @@ final ThemeData darkThemeDs = ThemeData(
     backgroundColor: Color(0xfff95b1c),
     foregroundColor: Colors.white70,
   ),
-  textSelectionTheme: const TextSelectionThemeData(
-    cursorColor: Color(0xfff95b1c),
-    selectionColor: Color.fromARGB(24, 249, 90, 28),
-    selectionHandleColor: Color(0xfff95b1c),
-  ),
+  textSelectionTheme: DsTextSelectionTheme.textSelectionThemeDefault,
   textTheme: DsTextTheme.darkTextTheme,
 );

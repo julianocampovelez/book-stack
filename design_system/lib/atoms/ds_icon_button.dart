@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A customizable icon button widget.
 class DsIconButton extends StatelessWidget {
   /// Creates a customizable icon button widget.
   const DsIconButton({
@@ -17,12 +18,14 @@ class DsIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    Widget dsIconButton = IconButton(
       onPressed: onPressed,
       icon: icon,
       style: ButtonStyle(
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
       ),
     );
+
+    return dsIconButton;
   }
 }

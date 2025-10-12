@@ -9,3 +9,5 @@ export 'organisms/ds_custom_grid.dart';
 
 // Atoms
 export 'atoms/ds_icon_button.dart';
+export 'atoms/ds_network_image.dart';
+export 'atoms/ds_circular_progress.dart';
