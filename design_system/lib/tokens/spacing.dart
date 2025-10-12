@@ -1,6 +1,6 @@
 /// A class containing pre-defined spacing values for UI elements.
-class DSSpacing {
-  DSSpacing._(); // Private constructor to prevent instantiation.
+class DsSpacing {
+  DsSpacing._(); // Private constructor to prevent instantiation.
 
   /// The extra extra small spacing (XXS) - 3 pixels.
   static const double spaceXXS = 3;
@@ -10,6 +10,9 @@ class DSSpacing {
 
   /// The small spacing (SM) - 8 pixels.
   static const double spaceSM = 8;
+
+  /// The medium small spacing (MD) - 16 pixels.
+  static const double spaceMS = 16;
 
   /// The medium spacing (MD) - 21 pixels.
   static const double spaceMD = 21;

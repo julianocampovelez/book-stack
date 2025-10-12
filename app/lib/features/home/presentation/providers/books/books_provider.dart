@@ -1,4 +1,3 @@
-import 'package:app/features/home/presentation/state/sort_provider.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:app/core/entities/either_entity.dart';
@@ -6,6 +5,7 @@ import 'package:app/core/network/errors/failures.dart';
 import 'package:app/features/home/domain/entities/entities.dart';
 import 'package:app/features/home/presentation/providers/providers.dart';
 import 'package:app/features/home/presentation/state/books_state.dart';
+import 'package:app/features/home/presentation/state/sort_provider.dart';
 
 final programmingBooksProvider =
     StateNotifierProvider<BooksNotifier, BooksState>((ref) {

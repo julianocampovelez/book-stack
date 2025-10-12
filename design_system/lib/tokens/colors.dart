@@ -19,6 +19,9 @@ class DsColors {
   /// The color used to indicate an error state.
   static const statusError = Color.fromRGBO(232, 56, 56, 1);
 
+  /// The color used for stars.
+  static const amber = Colors.amber;
+
   // Grayscale color palette
   /// White (used for backgrounds, etc.).
   static const scale00 = Color(0xFFFFFFFF);

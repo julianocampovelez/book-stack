@@ -6,6 +6,8 @@ import 'package:app/core/network/errors/failures.dart';
 import 'package:app/features/home/domain/entities/entities.dart';
 import 'package:app/features/home/presentation/providers/providers.dart';
 import 'package:app/features/home/presentation/state/book_details_state.dart';
+import 'package:design_system/foundations/colors.dart';
+import 'package:design_system/tokens/spacing.dart';
 
 class BookDetailsScreen extends ConsumerStatefulWidget {
   static const String routeName = '/bookScreen';
@@ -48,7 +50,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: book != null
-                  ? _Content(book: book)
+                  ? _BookDetailsView(book: book)
                   : const SizedBox.shrink(),
             ),
           ),
@@ -58,46 +60,110 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
   }
 }
 
-class _Content extends ConsumerWidget {
+class _BookDetailsView extends ConsumerWidget {
   final Book book;
 
-  const _Content({required this.book});
+  const _BookDetailsView({required this.book});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
     final int score = ref.watch(scoreBooksProvider)[book.isbn13] ?? 0;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Book Title
+        Text(book.title, style: textTheme.titleMedium),
+        const SizedBox(height: DsSpacing.spaceXXS),
+
+        // Book Subtitle
+        if (book.subtitle.isNotEmpty) ...[
+          Text(book.subtitle, style: textTheme.bodyMedium),
+          const SizedBox(height: DsSpacing.spaceXXS),
+        ],
+
+        // Book Authors
         Text(
-          book.title,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          'Autor(es): ${book.authors ?? 'Autor desconocido'}',
+          style: textTheme.bodyMedium,
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Text('Puntuación: '),
+        const SizedBox(height: DsSpacing.spaceXXS),
 
-            ...List.generate(5, (index) {
-              final int ratingValue = (index + 1);
-              final bool isFilled = ratingValue <= score;
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                child: GestureDetector(
-                  onTap: () {
-                    ref
-                        .read(scoreBooksProvider.notifier)
-                        .setScoreBook(isbn13: book.isbn13, score: ratingValue);
-                  },
-                  child: Icon(
-                    isFilled ? Icons.star : Icons.star_border,
-                    color: Colors.amber,
-                  ),
-                ),
-              );
-            }),
-          ],
+        // Book Publisher
+        Text(
+          'Editorial: ${book.publisher ?? 'Editorial desconocida'}',
+          style: textTheme.bodyMedium,
         ),
+        const SizedBox(height: DsSpacing.spaceSM),
+
+        // Book Price
+        Text(
+          '\$${book.price.toString()}',
+          style: textTheme.titleLarge?.copyWith(
+            color: DsColorsFoundations.primaryColor,
+          ),
+        ),
+        const SizedBox(height: DsSpacing.spaceSM),
+
+        // Score Stars
+        _ScoreStarts(
+          score: score,
+          onTap: (int ratingValue) => ref
+              .read(scoreBooksProvider.notifier)
+              .setScoreBook(isbn13: book.isbn13, score: ratingValue),
+        ),
+
+        const SizedBox(height: DsSpacing.spaceSM),
+        Text(
+          book.desc ?? 'Descripción no disponible',
+          style: textTheme.bodyMedium,
+        ),
+        const SizedBox(height: DsSpacing.spaceMS),
+
+        Text(
+          'Año de publicación: ${book.year ?? 'Año desconocido'}',
+          style: textTheme.bodyMedium,
+        ),
+        const SizedBox(height: DsSpacing.spaceXS),
+
+        Text(
+          'Idioma: ${book.language ?? 'Idioma desconocido'}',
+          style: textTheme.bodyMedium,
+        ),
+        const SizedBox(height: DsSpacing.spaceMD),
+      ],
+    );
+  }
+}
+
+class _ScoreStarts extends StatelessWidget {
+  const _ScoreStarts({required this.score, required this.onTap});
+
+  final int score;
+  final Function(int) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text('Tu calificación: '),
+
+        ...List.generate(5, (index) {
+          final int ratingValue = (index + 1);
+          final bool isFilled = ratingValue <= score;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
+            child: GestureDetector(
+              onTap: () => onTap(ratingValue),
+              child: Icon(
+                isFilled ? Icons.star : Icons.star_border,
+                color: DsColorsFoundations.starColor,
+              ),
+            ),
+          );
+        }),
       ],
     );
   }
