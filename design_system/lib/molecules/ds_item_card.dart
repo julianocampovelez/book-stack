@@ -1,4 +1,3 @@
-import 'package:design_system/tokens/typography.dart';
 import 'package:flutter/material.dart';
 
 import 'package:design_system/design_system.dart';
@@ -77,12 +76,12 @@ class DsItemCard extends StatelessWidget {
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: textTheme.titleMedium,
+                    style: textTheme.titleSmall,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     '\$$price',
-                    style: textTheme.labelLarge?.copyWith(
+                    style: textTheme.titleMedium?.copyWith(
                       color: DsColorsFoundations.primaryColor,
                     ),
                   ),

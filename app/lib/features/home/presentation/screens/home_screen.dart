@@ -1,19 +1,15 @@
-import 'package:app/core/network/errors/failures.dart';
-import 'package:design_system/foundations/colors.dart';
-import 'package:design_system/tokens/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:app/features/home/domain/entities/entities.dart';
-import 'package:app/features/home/presentation/delegates/search_book_delegate.dart';
 import 'package:app/features/home/presentation/providers/books/books_provider.dart';
 import 'package:app/features/home/presentation/providers/providers.dart';
 import 'package:app/features/home/presentation/screens/screens.dart';
 import 'package:app/features/home/presentation/state/books_state.dart';
-import 'package:app/features/home/presentation/state/sort_provider.dart';
+import 'package:app/features/home/presentation/widgets/widgets.dart';
 import 'package:design_system/design_system.dart';
 
+// The main screen displaying a list of programming books
 class HomeScreen extends ConsumerStatefulWidget {
   static const String routeName = '/homeScreen';
   const HomeScreen({super.key});
@@ -47,95 +43,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   // Function to handle sorting, scroll to top and update state
-  void _handleSort(PriceOrder order) async {
+  void _handleSort() async {
     await scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-
-    ref.read(programmingBooksProvider.notifier).sortByPrice(order);
-  }
-
-  // Function to determine the icon of icon button theme based on the current theme
-  IconData _iconTheme() {
-    return Theme.of(context).brightness == Brightness.dark
-        ? Icons.dark_mode_outlined
-        : Icons.light_mode_outlined;
   }
 
   @override
   Widget build(BuildContext context) {
     final BooksState booksState = ref.watch(programmingBooksProvider);
-    final PriceOrder currentSortOrder = ref.watch(sortBooksProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: false,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                DsColorsFoundations.primaryColor,
-                DsColorsFoundations.secondaryColor,
-              ],
-            ),
-          ),
-        ),
-        title: const Text(
-          'Book Stack',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-        ),
-        actions: [
-          DsIconButton(
-            icon: Icon(_iconTheme()),
-            onPressed: () {
-              ref.read(themeNotifierProvider.notifier).toggleThemeMode();
-            },
-          ),
-
-          DsIconButton(
-            onPressed: () async {
-              final Book? book = await showSearch<Book?>(
-                context: context,
-                delegate: SearchBookDelegate(
-                  searchBooks: ref.read(booksRepositoryProvider).searchBooks,
-                ),
-              );
-            },
-            icon: const Icon(Icons.search),
-          ),
-
-          DsIconButton(
-            onPressed: () async {
-              final selected = await showMenu<PriceOrder>(
-                initialValue: currentSortOrder,
-                context: context,
-                position: const RelativeRect.fromLTRB(3000, 80, 16, 0),
-                items: const [
-                  PopupMenuItem(
-                    value: PriceOrder.ascending,
-                    child: Text('Precio: menor a mayor'),
-                  ),
-                  PopupMenuItem(
-                    value: PriceOrder.descending,
-                    child: Text('Precio: mayor a menor'),
-                  ),
-                ],
-              );
-
-              if (selected != null) {
-                _handleSort(selected);
-              }
-            },
-            icon: const Icon(Icons.filter_list),
-          ),
-        ],
-      ),
-
+      appBar: HomeAppBar(handleSort: _handleSort),
       body: _HomeView(
         booksState: booksState,
         scrollController: scrollController,
@@ -144,6 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
+// The main view displaying the list of books or an error/loading state
 class _HomeView extends StatelessWidget {
   const _HomeView({required this.booksState, required this.scrollController});
 
@@ -153,11 +75,11 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (booksState.failure != null) {
-      return _ErrorView(failure: booksState.failure!);
+      return ErrorView(failure: booksState.failure!);
     }
 
     if (booksState.books.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: DsCircularProgress());
     }
 
     return Padding(
@@ -180,37 +102,6 @@ class _HomeView extends StatelessWidget {
                   ),
                 );
               },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.failure});
-
-  final Failure failure;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 40,
-            color: DsColorsFoundations.errorColor,
-          ),
-          const SizedBox(height: DsSpacing.spaceSM),
-          Text(
-            failure.message,
-            style: textTheme.labelMedium?.copyWith(
-              color: DsColorsFoundations.errorColor,
             ),
           ),
         ],
