@@ -1,5 +1,6 @@
 // Tokens
 export 'tokens/spacing.dart';
+export 'tokens/typography.dart';
 
 // Foundations
 export 'foundations/themes/ds_themes.dart';

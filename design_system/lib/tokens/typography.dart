@@ -2,6 +2,9 @@
 class DsTypography {
   DsTypography._();
 
+  /// The name of the primary font family used throughout the app.
+  static const String familyOpenSans = 'OpenSans';
+
   // Base text sizes (responsive-friendly)
   /// Body text size - 16 pixels
   static const double body = 16;
