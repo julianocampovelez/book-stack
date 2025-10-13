@@ -31,8 +31,8 @@ void main() {
     );
   }
 
-  group('HomeScreen', () {
-    testWidgets('✅ muestra los libros cuando la carga es exitosa', (
+  group('[HomeScreen Test]', () {
+    testWidgets('Shows the books when the upload is successful.', (
       WidgetTester tester,
     ) async {
       // Arrange
@@ -60,7 +60,7 @@ void main() {
       expect(find.text('Clean Code'), findsOneWidget);
     });
 
-    testWidgets('❌ muestra mensaje de error cuando ocurre un Failure', (
+    testWidgets('Shows an error message when a Failure occurs.', (
       WidgetTester tester,
     ) async {
       // Arrange
@@ -78,7 +78,7 @@ void main() {
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
     });
 
-    testWidgets('🔍 al presionar el botón de búsqueda abre el SearchDelegate', (
+    testWidgets('Opens the SearchDelegate when the search button is pressed', (
       tester,
     ) async {
       final books = [
@@ -111,23 +111,14 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest(const HomeScreen()));
       await tester.pump();
 
-      // Tap en el icono de búsqueda
       final searchButton = find.byIcon(Icons.search);
       expect(searchButton, findsOneWidget);
 
       await tester.tap(searchButton);
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      // ✅ Verificar que se abrió la barra de búsqueda (campo de texto)
-      // expect(find.byType(EditableText), findsOneWidget);
-      expect(
-        find.text('Buscar libros...'),
-        findsOneWidget,
-      ); // si tu SearchDelegate tiene hint
+      expect(find.text('Buscar libros...'), findsOneWidget);
       expect(find.text('Domain-Driven Design'), findsOneWidget);
-
-      // // Verificar que el SearchDelegate aparece
-      // expect(find.byType(SearchDelegate), findsOneWidget);
     });
   });
 }
