@@ -1,3 +1,6 @@
+import 'package:app/core/network/errors/failures.dart';
+import 'package:design_system/foundations/colors.dart';
+import 'package:design_system/tokens/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -75,7 +78,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xfff95b1c), Color(0xffff7a00)],
+              colors: [
+                DsColorsFoundations.primaryColor,
+                DsColorsFoundations.secondaryColor,
+              ],
             ),
           ),
         ),
@@ -147,12 +153,7 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (booksState.failure != null) {
-      return Center(
-        child: Text(
-          'Error: ${booksState.failure!.message}',
-          style: const TextStyle(color: Colors.red),
-        ),
-      );
+      return _ErrorView(failure: UnknownFailure('Error', -1));
     }
 
     if (booksState.books.isEmpty) {
@@ -179,6 +180,37 @@ class _HomeView extends StatelessWidget {
                   ),
                 );
               },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  const _ErrorView({required this.failure});
+
+  final Failure failure;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 40,
+            color: DsColorsFoundations.errorColor,
+          ),
+          const SizedBox(height: DsSpacing.spaceSM),
+          Text(
+            failure.message,
+            style: textTheme.labelMedium?.copyWith(
+              color: DsColorsFoundations.errorColor,
             ),
           ),
         ],

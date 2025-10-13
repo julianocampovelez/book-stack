@@ -7,6 +7,7 @@ class DsColorsFoundations {
   static const Color primaryColor = DsColors.primaryColor;
   static const Color secondaryColor = DsColors.secondaryColor;
   static const Color starColor = DsColors.amber;
+  static const Color errorColor = DsColors.statusError;
 
   static const Color bgDark = DsColors.dark;
   static const Color darkTextColor = DsColors.scale00;

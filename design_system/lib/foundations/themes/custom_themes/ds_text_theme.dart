@@ -28,7 +28,7 @@ class DsTextTheme {
       color: DsColorsFoundations.lightTextColor,
     ),
     titleMedium: TextStyle().copyWith(
-      fontSize: DsTypography.h2,
+      fontSize: DsTypography.h5,
       fontWeight: FontWeight.w500,
       color: DsColorsFoundations.lightTextColor,
     ),
@@ -76,7 +76,7 @@ class DsTextTheme {
       color: DsColorsFoundations.darkTextColor,
     ),
     titleMedium: TextStyle().copyWith(
-      fontSize: DsTypography.h2,
+      fontSize: DsTypography.h5,
       fontWeight: FontWeight.w500,
       color: DsColorsFoundations.darkTextColor,
     ),

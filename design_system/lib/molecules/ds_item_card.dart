@@ -1,3 +1,4 @@
+import 'package:design_system/tokens/typography.dart';
 import 'package:flutter/material.dart';
 
 import 'package:design_system/design_system.dart';
@@ -76,7 +77,7 @@ class DsItemCard extends StatelessWidget {
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: textTheme.bodySmall,
+                    style: textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
                   Text(
