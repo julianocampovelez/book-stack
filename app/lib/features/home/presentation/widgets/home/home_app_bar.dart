@@ -1,21 +1,37 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:app/features/home/domain/entities/entities.dart';
 import 'package:app/features/home/presentation/delegates/search_book_delegate.dart';
 import 'package:app/features/home/presentation/providers/providers.dart';
+import 'package:app/features/home/presentation/screens/book_screen.dart';
 import 'package:app/features/home/presentation/state/sort_provider.dart';
 import 'package:design_system/design_system.dart';
 
+// Custom AppBar for the Home Screen
 class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key, required this.handleSort});
 
+  // Callback to handle sorting action
   final VoidCallback handleSort;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       title: const Text('Book Stack'),
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              DsColorsFoundations.primaryColor,
+              DsColorsFoundations.secondaryColor,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+      ),
       actions: [
         // Theme toggle button
         DsIconButton(
@@ -32,11 +48,20 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
         DsIconButton(
           icon: const Icon(Icons.search),
           onPressed: () async {
-            await showSearch<Book?>(
+            // Open the search delegate and await the selected book
+            final Book? book = await showSearch<Book?>(
               context: context,
               delegate: SearchBookDelegate(
                 searchBooks: ref.read(booksRepositoryProvider).searchBooks,
               ),
+            );
+
+            if (!context.mounted || book == null) return;
+
+            // Navigate to the book details screen with the selected book's ISBN13
+            context.pushNamed(
+              BookDetailsScreen.routeName,
+              pathParameters: {'isbn13': book.isbn13},
             );
           },
         ),

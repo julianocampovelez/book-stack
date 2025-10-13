@@ -4,6 +4,7 @@ export 'tokens/spacing.dart';
 // Foundations
 export 'foundations/themes/ds_themes.dart';
 export 'foundations/colors.dart';
+export 'foundations/typo.dart';
 
 // Molecules
 export 'molecules/ds_item_card.dart';

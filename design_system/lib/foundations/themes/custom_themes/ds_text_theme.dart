@@ -1,6 +1,6 @@
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
-import 'package:design_system/foundations/colors.dart';
 import 'package:design_system/tokens/typography.dart';
 
 /// Custom text themes for light and dark modes.
@@ -10,49 +10,49 @@ class DsTextTheme {
   /// Light mode text theme
   static TextTheme lightTextTheme = TextTheme(
     bodyLarge: TextStyle(
-      fontSize: DsTypography.body, // 16
+      fontSize: DsTypoFoundations.fontSizeBody, // 16
       fontWeight: FontWeight.w400,
       color: DsColorsFoundations.lightTextColor,
     ),
 
     bodyMedium: TextStyle(
-      fontSize: DsTypography.h5, // 14
+      fontSize: DsTypoFoundations.fontSizeH5, // 14
       fontWeight: FontWeight.w400,
       color: DsColorsFoundations.lightTextColor,
     ),
 
     bodySmall: TextStyle(
-      fontSize: DsTypography.h6, // 12
+      fontSize: DsTypoFoundations.fontSizeH6, // 12
       fontWeight: FontWeight.w400,
       color: DsColorsFoundations.lightTextColor,
     ),
 
     titleLarge: TextStyle(
-      fontSize: DsTypography.h2, // 24
+      fontSize: DsTypoFoundations.fontSizeH2, // 24
       fontWeight: FontWeight.w700,
       color: DsColorsFoundations.lightTextColor,
     ),
 
     titleMedium: TextStyle(
-      fontSize: DsTypography.h3, // 20
+      fontSize: DsTypoFoundations.fontSizeH3, // 20
       fontWeight: FontWeight.w600,
       color: DsColorsFoundations.lightTextColor,
     ),
 
     titleSmall: TextStyle(
-      fontSize: DsTypography.h4, // 16
+      fontSize: DsTypoFoundations.fontSizeH4, // 16
       fontWeight: FontWeight.w500,
       color: DsColorsFoundations.lightTextColor,
     ),
 
     labelLarge: TextStyle(
-      fontSize: DsTypography.h5, // 14
+      fontSize: DsTypoFoundations.fontSizeH5, // 14
       fontWeight: FontWeight.w600,
       color: DsColorsFoundations.lightTextColor,
     ),
 
     labelMedium: TextStyle(
-      fontSize: DsTypography.h6, // 12
+      fontSize: DsTypoFoundations.fontSizeH6, // 12
       fontWeight: FontWeight.w600,
       color: DsColorsFoundations.lightTextColor,
     ),
@@ -67,49 +67,49 @@ class DsTextTheme {
   /// Dark mode text theme
   static TextTheme darkTextTheme = TextTheme(
     bodyLarge: TextStyle(
-      fontSize: DsTypography.body,
+      fontSize: DsTypoFoundations.fontSizeBody,
       fontWeight: FontWeight.w400,
       color: DsColorsFoundations.darkTextColor,
     ),
 
     bodyMedium: TextStyle(
-      fontSize: DsTypography.h5,
+      fontSize: DsTypoFoundations.fontSizeH5,
       fontWeight: FontWeight.w400,
       color: DsColorsFoundations.darkTextColor,
     ),
 
     bodySmall: TextStyle(
-      fontSize: DsTypography.h6,
+      fontSize: DsTypoFoundations.fontSizeH6,
       fontWeight: FontWeight.w400,
       color: DsColorsFoundations.darkTextColor,
     ),
 
     titleLarge: TextStyle(
-      fontSize: DsTypography.h2,
+      fontSize: DsTypoFoundations.fontSizeH2,
       fontWeight: FontWeight.w700,
       color: DsColorsFoundations.darkTextColor,
     ),
 
     titleMedium: TextStyle(
-      fontSize: DsTypography.h3,
+      fontSize: DsTypoFoundations.fontSizeH3,
       fontWeight: FontWeight.w600,
       color: DsColorsFoundations.darkTextColor,
     ),
 
     titleSmall: TextStyle(
-      fontSize: DsTypography.h4,
+      fontSize: DsTypoFoundations.fontSizeH4,
       fontWeight: FontWeight.w500,
       color: DsColorsFoundations.darkTextColor,
     ),
 
     labelLarge: TextStyle(
-      fontSize: DsTypography.h5,
+      fontSize: DsTypoFoundations.fontSizeH5,
       fontWeight: FontWeight.w600,
       color: DsColorsFoundations.darkTextColor,
     ),
 
     labelMedium: TextStyle(
-      fontSize: DsTypography.h6,
+      fontSize: DsTypoFoundations.fontSizeH6,
       fontWeight: FontWeight.w600,
       color: DsColorsFoundations.darkTextColor,
     ),

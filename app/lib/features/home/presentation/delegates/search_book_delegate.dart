@@ -1,3 +1,4 @@
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -49,18 +50,9 @@ class SearchBookDelegate extends SearchDelegate<Book?> {
               itemBuilder: (context, index) {
                 print(books[index].title);
                 final book = books[index];
-                return ListTile(
-                  title: Text(book.title),
-                  subtitle: Text(book.subtitle),
-                  leading: book.image.isNotEmpty
-                      ? Image.network(
-                          book.image,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.book);
-                          },
-                        )
-                      : null,
-                  onTap: () {
+                return _BookItem(
+                  book: book,
+                  onBookSelected: (context, book) {
                     _clearStreams();
                     close(context, book);
                   },
@@ -80,6 +72,12 @@ class SearchBookDelegate extends SearchDelegate<Book?> {
 
   @override
   String get searchFieldLabel => 'Buscar libros...';
+
+  @override
+  TextStyle? get searchFieldStyle => const TextStyle(
+    fontSize: DsTypoFoundations.fontSizeH3,
+    fontWeight: FontWeight.w400,
+  );
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -106,5 +104,62 @@ class SearchBookDelegate extends SearchDelegate<Book?> {
   Widget buildSuggestions(BuildContext context) {
     _onQueryChanged(query);
     return _buildResults();
+  }
+}
+
+class _BookItem extends StatelessWidget {
+  final Book book;
+  final Function onBookSelected;
+
+  const _BookItem({required this.book, required this.onBookSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textStyles = Theme.of(context).textTheme;
+    final Size size = MediaQuery.of(context).size;
+
+    return GestureDetector(
+      onTap: () => onBookSelected(context, book),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+        child: Row(
+          children: [
+            SizedBox(
+              width: size.width * 0.2,
+              child: DsNetworkImage(url: book.image),
+            ),
+            const SizedBox(width: 10),
+            SizedBox(
+              width: size.width * 0.65,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    book.title,
+                    style: textStyles.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (book.subtitle.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        book.subtitle,
+                        style: textStyles.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w400,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
