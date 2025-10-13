@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:app/features/home/presentation/widgets/widgets.dart';
-import 'package:app/core/network/errors/failures.dart';
 import 'package:app/features/home/domain/entities/entities.dart';
 import 'package:app/features/home/presentation/providers/providers.dart';
 import 'package:app/features/home/presentation/state/book_details_state.dart';
-import 'package:design_system/foundations/colors.dart';
-import 'package:design_system/tokens/spacing.dart';
+import 'package:app/features/home/presentation/widgets/widgets.dart';
+import 'package:design_system/design_system.dart';
 
 class BookDetailsScreen extends ConsumerStatefulWidget {
   static const String routeName = '/bookScreen';
@@ -40,7 +38,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _CustomSliverAppBar(
+          CustomSliverAppBar(
             book: book,
             failure: bookDetailsMap.failure,
             isLoading: bookDetailsMap.isLoading,
@@ -107,7 +105,7 @@ class _BookDetailsView extends ConsumerWidget {
         const SizedBox(height: DsSpacing.spaceSM),
 
         // Score Stars
-        _ScoreStarts(
+        ScoreStars(
           score: score,
           onTap: (int ratingValue) => ref
               .read(scoreBooksProvider.notifier)
@@ -136,166 +134,3 @@ class _BookDetailsView extends ConsumerWidget {
     );
   }
 }
-
-class _ScoreStarts extends StatelessWidget {
-  const _ScoreStarts({required this.score, required this.onTap});
-
-  final int score;
-  final Function(int) onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('Tu calificación: '),
-
-        ...List.generate(5, (index) {
-          final int ratingValue = (index + 1);
-          final bool isFilled = ratingValue <= score;
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: GestureDetector(
-              onTap: () => onTap(ratingValue),
-              child: Icon(
-                isFilled ? Icons.star : Icons.star_border,
-                color: DsColorsFoundations.starColor,
-              ),
-            ),
-          );
-        }),
-      ],
-    );
-  }
-}
-
-class _CustomSliverAppBar extends ConsumerWidget {
-  final bool isLoading;
-  final Failure? failure;
-  final Book? book;
-
-  const _CustomSliverAppBar({
-    required this.isLoading,
-    required this.failure,
-    required this.book,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final Size size = MediaQuery.of(context).size;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    Widget content;
-
-    if (failure != null) {
-      content = ErrorDetailsView(failure: failure!);
-    } else if (isLoading || book == null) {
-      content = const Center(
-        child: CircularProgressIndicator(color: Color(0xfff95b1c)),
-      );
-    } else {
-      content = BookImageView(book: book!);
-    }
-
-    return SliverAppBar(
-      backgroundColor: isDark
-          ? Color(0xff262626)
-          : Color.fromARGB(255, 238, 238, 238),
-      expandedHeight: size.height * 0.6,
-      foregroundColor: Colors.white,
-      actions: [],
-      flexibleSpace: FlexibleSpaceBar(
-        background: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: content,
-        ),
-      ),
-    );
-  }
-}
-
-// Builder(
-//         builder: (context) {
-//           if (bookDetailsMap.failure != null) {
-//             return Center(
-//               child: Text('Error: ${bookDetailsMap.failure!.message}'),
-//             );
-//           }
-
-//           final Book? book = bookDetailsMap.books[widget.isbn13];
-
-//           if (bookDetailsMap.isLoading || book == null) {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-
-//           return Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: SingleChildScrollView(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Center(
-//                     child: Image.network(
-//                       bookDetailsMap.books[widget.isbn13]?.image ?? '',
-//                       height: 200,
-//                       fit: BoxFit.cover,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   Text(
-//                     book.title,
-//                     style: const TextStyle(
-//                       fontSize: 24,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 8),
-//                   Row(
-//                     children: [
-//                       Text('Puntuación: '),
-
-//                       ...List.generate(5, (index) {
-//                         final int ratingValue = (index + 1);
-//                         final bool isFilled = ratingValue <= score;
-
-//                         return Padding(
-//                           padding: const EdgeInsets.symmetric(horizontal: 2.0),
-//                           child: GestureDetector(
-//                             onTap: () {
-//                               ref
-//                                   .read(scoreBooksProvider.notifier)
-//                                   .setScoreBook(
-//                                     isbn13: widget.isbn13,
-//                                     score: ratingValue,
-//                                   );
-//                             },
-//                             child: Icon(
-//                               isFilled ? Icons.star : Icons.star_border,
-//                               color: Colors.amber,
-//                             ),
-//                           ),
-//                         );
-//                       }),
-//                     ],
-//                   ),
-
-//                   Text(
-//                     'Authors: ${book.authors}',
-//                     style: const TextStyle(fontSize: 16),
-//                   ),
-//                   const SizedBox(height: 8),
-//                   Text(
-//                     'Publisher: ${book.publisher}',
-//                     style: const TextStyle(fontSize: 16),
-//                   ),
-//                   const SizedBox(height: 8),
-//                   Text(
-//                     'Description: ${book.desc ?? 'Description no disponible'}',
-//                     style: const TextStyle(fontSize: 16),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           );
-//         },
-//       ),

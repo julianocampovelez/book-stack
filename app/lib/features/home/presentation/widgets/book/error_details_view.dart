@@ -1,6 +1,6 @@
-import 'package:design_system/foundations/colors.dart';
 import 'package:flutter/material.dart';
 
+import 'package:design_system/foundations/colors.dart';
 import 'package:app/core/network/errors/failures.dart';
 
 class ErrorDetailsView extends StatelessWidget {
