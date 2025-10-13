@@ -18,6 +18,11 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final TextStyle? textStyle = Theme.of(
+      context,
+    ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.normal);
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return AppBar(
       title: const Text('Book Stack'),
       flexibleSpace: Container(
@@ -36,9 +41,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
         // Theme toggle button
         DsIconButton(
           icon: Icon(
-            Theme.of(context).brightness == Brightness.dark
-                ? Icons.dark_mode_outlined
-                : Icons.light_mode_outlined,
+            isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
           ),
           onPressed: () =>
               ref.read(themeNotifierProvider.notifier).toggleThemeMode(),
@@ -71,16 +74,20 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.filter_list),
           onPressed: () async {
             final selected = await showMenu<PriceOrder>(
+              color: isDark
+                  ? DsColorsFoundations.bgDark
+                  : DsColorsFoundations.bgLight,
               context: context,
-              position: const RelativeRect.fromLTRB(3000, 80, 16, 0),
-              items: const [
+              position: const RelativeRect.fromLTRB(1000, 80, 16, 0),
+              items: [
                 PopupMenuItem(
                   value: PriceOrder.ascending,
-                  child: Text('Precio (menor a mayor)'),
+
+                  child: Text('Precio (menor a mayor)', style: textStyle),
                 ),
                 PopupMenuItem(
                   value: PriceOrder.descending,
-                  child: Text('Precio (mayor a menor)'),
+                  child: Text('Precio (mayor a menor)', style: textStyle),
                 ),
               ],
             );
