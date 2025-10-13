@@ -8,6 +8,9 @@ class ScoreBooks extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get isbn13 => text().named('isbn13')();
   IntColumn get score => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {isbn13};
 }
 
 @DriftDatabase(tables: [ScoreBooks])

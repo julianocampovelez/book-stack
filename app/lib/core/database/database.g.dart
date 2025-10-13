@@ -17,7 +17,7 @@ class $ScoreBooksTable extends ScoreBooks
     false,
     hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
@@ -57,6 +57,8 @@ class $ScoreBooksTable extends ScoreBooks
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('isbn13')) {
       context.handle(
@@ -76,7 +78,7 @@ class $ScoreBooksTable extends ScoreBooks
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {isbn13};
   @override
   ScoreBook map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -187,25 +189,31 @@ class ScoreBooksCompanion extends UpdateCompanion<ScoreBook> {
   final Value<int> id;
   final Value<String> isbn13;
   final Value<int> score;
+  final Value<int> rowid;
   const ScoreBooksCompanion({
     this.id = const Value.absent(),
     this.isbn13 = const Value.absent(),
     this.score = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   ScoreBooksCompanion.insert({
-    this.id = const Value.absent(),
+    required int id,
     required String isbn13,
     this.score = const Value.absent(),
-  }) : isbn13 = Value(isbn13);
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       isbn13 = Value(isbn13);
   static Insertable<ScoreBook> custom({
     Expression<int>? id,
     Expression<String>? isbn13,
     Expression<int>? score,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (isbn13 != null) 'isbn13': isbn13,
       if (score != null) 'score': score,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -213,11 +221,13 @@ class ScoreBooksCompanion extends UpdateCompanion<ScoreBook> {
     Value<int>? id,
     Value<String>? isbn13,
     Value<int>? score,
+    Value<int>? rowid,
   }) {
     return ScoreBooksCompanion(
       id: id ?? this.id,
       isbn13: isbn13 ?? this.isbn13,
       score: score ?? this.score,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -233,6 +243,9 @@ class ScoreBooksCompanion extends UpdateCompanion<ScoreBook> {
     if (score.present) {
       map['score'] = Variable<int>(score.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -241,7 +254,8 @@ class ScoreBooksCompanion extends UpdateCompanion<ScoreBook> {
     return (StringBuffer('ScoreBooksCompanion(')
           ..write('id: $id, ')
           ..write('isbn13: $isbn13, ')
-          ..write('score: $score')
+          ..write('score: $score, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -260,15 +274,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 
 typedef $$ScoreBooksTableCreateCompanionBuilder =
     ScoreBooksCompanion Function({
-      Value<int> id,
+      required int id,
       required String isbn13,
       Value<int> score,
+      Value<int> rowid,
     });
 typedef $$ScoreBooksTableUpdateCompanionBuilder =
     ScoreBooksCompanion Function({
       Value<int> id,
       Value<String> isbn13,
       Value<int> score,
+      Value<int> rowid,
     });
 
 class $$ScoreBooksTableFilterComposer
@@ -374,16 +390,24 @@ class $$ScoreBooksTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> isbn13 = const Value.absent(),
                 Value<int> score = const Value.absent(),
-              }) => ScoreBooksCompanion(id: id, isbn13: isbn13, score: score),
+                Value<int> rowid = const Value.absent(),
+              }) => ScoreBooksCompanion(
+                id: id,
+                isbn13: isbn13,
+                score: score,
+                rowid: rowid,
+              ),
           createCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
+                required int id,
                 required String isbn13,
                 Value<int> score = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => ScoreBooksCompanion.insert(
                 id: id,
                 isbn13: isbn13,
                 score: score,
+                rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

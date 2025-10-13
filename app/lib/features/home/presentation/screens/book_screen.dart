@@ -187,12 +187,12 @@ class _CustomSliverAppBar extends ConsumerWidget {
 
     Widget content;
 
-    if (isLoading || book == null) {
+    if (failure != null) {
+      content = ErrorDetailsView(failure: failure!);
+    } else if (isLoading || book == null) {
       content = const Center(
         child: CircularProgressIndicator(color: Color(0xfff95b1c)),
       );
-    } else if (failure != null) {
-      content = ErrorDetailsView(failure: failure!);
     } else {
       content = BookImageView(book: book!);
     }

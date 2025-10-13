@@ -1,18 +1,15 @@
-import 'package:app/core/entities/either_entity.dart';
-import 'package:app/features/home/infrastructure/repositories/books_repository_impl.dart';
-import 'package:app/features/home/presentation/providers/providers.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:app/features/home/domain/entities/book.dart';
-import 'package:app/features/home/domain/repositories/books_repository.dart';
-import 'package:app/features/home/presentation/providers/books/books_provider.dart';
-import 'package:app/features/home/presentation/screens/home_screen.dart';
-import 'package:app/core/network/errors/failures.dart';
-
+import 'package:app/core/entities/either_entity.dart';
 import 'package:app/core/env/config_env.dart';
+import 'package:app/core/network/errors/failures.dart';
+import 'package:app/features/home/domain/entities/book.dart';
+import 'package:app/features/home/infrastructure/repositories/books_repository_impl.dart';
+import 'package:app/features/home/presentation/providers/providers.dart';
+import 'package:app/features/home/presentation/screens/home_screen.dart';
 
 class MockBooksRepository extends Mock implements BooksRepositoryImpl {}
 
@@ -21,7 +18,6 @@ void main() {
 
   setUpAll(() async {
     await ConfigEnv.loadEnvironment();
-    // DioNetwork.getDio();
   });
 
   setUp(() {

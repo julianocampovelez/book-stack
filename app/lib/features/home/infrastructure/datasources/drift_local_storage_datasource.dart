@@ -17,6 +17,8 @@ class DriftLocalStorageDatasource implements LocalStorageDatasource {
   /// Returns `0` if the book has no stored score.
   @override
   Future<int> getScoreBook(String isbn13) async {
+    // db.delete(db.scoreBooks).go();
+
     final query = db.select(db.scoreBooks)
       ..where((table) => table.isbn13.equals(isbn13));
 
