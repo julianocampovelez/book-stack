@@ -153,7 +153,7 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (booksState.failure != null) {
-      return _ErrorView(failure: UnknownFailure('Error', -1));
+      return _ErrorView(failure: booksState.failure!);
     }
 
     if (booksState.books.isEmpty) {

@@ -16,6 +16,7 @@ dependencies:
   drift: ^2.28.2
   drift_flutter: ^0.2.7
   path_provider: ^2.1.5
+  mocktail: ^1.0.4
   design_system:
     path: ../design_system
 

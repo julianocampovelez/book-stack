@@ -53,7 +53,12 @@ class SearchBookDelegate extends SearchDelegate<Book?> {
                   title: Text(book.title),
                   subtitle: Text(book.subtitle),
                   leading: book.image.isNotEmpty
-                      ? Image.network(book.image)
+                      ? Image.network(
+                          book.image,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.book);
+                          },
+                        )
                       : null,
                   onTap: () {
                     _clearStreams();

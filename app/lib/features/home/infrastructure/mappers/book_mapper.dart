@@ -10,11 +10,6 @@ class BookMapper {
   ///
   /// This method formats the `price` field by removing the `$` symbol
   /// and parsing it as a `double`. If parsing fails, the price defaults to `0.0`.
-  ///
-  /// Example:
-  /// ```dart
-  /// final book = BookMapper.itbookToEntity(apiBook);
-  /// ```
   static Book itbookToEntity(BookItbook itbook) {
     final double formattedPrice = _parsePrice(itbook.price);
 
