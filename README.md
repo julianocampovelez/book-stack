@@ -27,7 +27,7 @@ El proyecto hace uso de las siguientes librerías y herramientas principales:
 Por motivos de seguridad, las variables de entorno no se incluyen en el repositorio.
 Se proporciona un archivo de plantilla llamado `.env.template`. Debes copiarlo y renombrarlo a `.env`:
 
-Para configuración:
+Para configuración: Estar dentro de la carpeta `app`.
 
 ```bash
 cp .env.template .env
@@ -59,18 +59,11 @@ Sigue estos pasos para clonar y ejecutar el proyecto localmente:
    - `app` → contiene la aplicación.
    - `design_system` → incluye el sistema de diseño basado en Atomic Design.
 
-   Debes instalar las dependencias en cada paquete por separado:
+   Debes instalar las dependencias en la carpeta `app`:
 
    ```bash
     # Instalar dependencias del paquete principal
     cd app
-    flutter pub get
-
-    # Volver al directorio raíz
-    cd ..
-
-    # Instalar dependencias del sistema de diseño
-    cd design_system
     flutter pub get
    ```
 
